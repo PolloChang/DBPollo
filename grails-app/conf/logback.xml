@@ -11,6 +11,8 @@
         </encoder>
     </appender>
 
+    <logger name="tw.com.pollochang.dbpollo" level="TRACE"/>
+
     <root level="error">
         <appender-ref ref="STDOUT" />
     </root>
