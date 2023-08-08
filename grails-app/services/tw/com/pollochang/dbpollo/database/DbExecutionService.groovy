@@ -3,9 +3,12 @@ package tw.com.pollochang.dbpollo.database
 
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.jdbc.datasource.DriverManagerDataSource
 
 @Transactional
 class DbExecutionService {
+
+    DriverManagerDataSource driverManagerDataSource
 
     def execute(GrailsParameterMap params) {
 
@@ -30,7 +33,10 @@ class DbExecutionService {
         log.debug("sqlText = "+sqlText)
         log.debug("driverClassName = "+driverClassName)
 
-
+        driverManagerDataSource = new DriverManagerDataSource()
+        driverManagerDataSource.setDriverClassName(driverClassName)
+        driverManagerDataSource.setUsername(username)
+        driverManagerDataSource.setPassword(password)
 
     }
 }
