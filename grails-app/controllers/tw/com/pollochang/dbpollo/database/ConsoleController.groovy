@@ -9,10 +9,12 @@ class ConsoleController {
     def index() { }
 
     JSON sqlScript(){
-        println params
 
-        dbExecutionService.execute(params)
+        LinkedHashMap result = [:]
 
-        render params as JSON
+        result.data = dbExecutionService.execute(params)
+
+        render result as JSON
     }
+
 }

@@ -36,6 +36,12 @@
                                     <g:select name="db-type" class="form-control" from="${tw.com.pollochang.dbpollo.database.DBType}" value="POSTGRESQL" />
                                 </div>
                             </div>
+                            <div class="col-3">
+                                <div class="form-group col-form-label">
+                                    <label for="db-name">db-name</label>
+                                    <g:textField name="db-name" class="form-control" value="dictdb" />
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-3">

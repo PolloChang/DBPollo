@@ -113,11 +113,11 @@ const jsonToHTML = (filterId,viewUrl,json) => {
         console.log(json)
         // json = JSON.parse(json);
         title = `<thead><tr>
-            <th>檢視</th>
+            <th>#</th>
             ${Object.keys(json[0]).map((el) => `<th scope="col">${el}</th>`).join('')}
             </tr></thead>`;
-        trs = json.map((el) =>
-            "<td><a class='btn btn-info' role='button' href='"+viewUrl+"/"+el.dn+"'>檢視</a></td>"+Object.values(el).map((td) => `<td>${td}</td>`).join('')
+        trs = json.map((el,index) =>
+            `<td>${index+1}</td>`+Object.values(el).map((td) => `<td>${td}</td>`).join('')
         );
         tbody = `<tbody>${trs.map((el) => `<tr>${el}</tr>`).join('')}</tbody>`
         table = `<table class="table">${title}${tbody}</table>`
