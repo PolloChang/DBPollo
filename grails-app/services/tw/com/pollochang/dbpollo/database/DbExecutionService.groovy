@@ -57,9 +57,15 @@ class DbExecutionService {
         ){
 
             try (ResultSet rs = ps.executeQuery()) {
-                resultList = dbUtil.resultSetToArrayList(rs)
+
+                if(rs != null){
+                    resultList = dbUtil.resultSetToArrayList(rs)
+                }else {
+                    resultList = []
+                }
             }
         }catch (SQLException ex){
+
             log.error(ex.message)
         }
 
