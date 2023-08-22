@@ -60,9 +60,11 @@ function executeAjax(obj){
                 case "filter":
                     showFilter(
                         obj.filterId,
-                        json.viewUrl,
                         json.data
                     );
+                    shownMessage('successMessageId',json.success,'text-success');
+                    shownMessage('errorMessageId',json.error ,'text-danger');
+
                     break;
                 case "save":
                     if(json.type){
@@ -93,36 +95,52 @@ function executeAjax(obj){
 /**
  * 呈現資料
  * @param filterId
- * @param viewUrl
  * @param json
  */
-function showFilter(filterId,viewUrl,json){
-    jsonToHTML(filterId,viewUrl,json);
+function showFilter(filterId,json){
+    jsonToHTML(filterId,json);
+}
+
+/**
+ * 處理訊息
+ * @param filterId
+ * @param json
+ * @param classes
+ */
+function shownMessage(filterId,json,classes) {
+    let messageDiv = "";
+    if(json){
+        messageDiv = `<span class="${classes}">${json}</span>`;
+    }
+    document.getElementById(filterId).innerHTML = messageDiv;
 }
 
 /**
  * json to HTML table
  * @see <a href="後端查詢出之json格式， javascript如何轉成表格顯示出來">https://ithelp.ithome.com.tw/questions/10199870</a>
  * @param filterId
- * @param viewUrl
  * @param json
  */
-const jsonToHTML = (filterId,viewUrl,json) => {
-    let title,trs,tbody,table
-    if(json.length !== 0){
-        console.log(json)
-        // json = JSON.parse(json);
-        title = `<thead><tr>
+const jsonToHTML = (filterId,json) => {
+    let title,trs,tbody;
+    let table = "";
+    if(json) {
+        if (json.length !== 0) {
+            // json = JSON.parse(json);
+            title = `<thead><tr>
             <th>#</th>
             ${Object.keys(json[0]).map((el) => `<th scope="col">${el}</th>`).join('')}
             </tr></thead>`;
-        trs = json.map((el,index) =>
-            `<td>${index+1}</td>`+Object.values(el).map((td) => `<td>${td}</td>`).join('')
-        );
-        tbody = `<tbody>${trs.map((el) => `<tr>${el}</tr>`).join('')}</tbody>`
-        table = `<table class="table">${title}${tbody}</table>`
-    }else{
-        table = `<div>查無資料</div>`
+
+            trs = json.map((el, index) =>
+                `<td>${index + 1}</td>` + Object.values(el).map((td) => `<td>${td}</td>`).join('')
+            );
+
+            tbody = `<tbody>${trs.map((el) => `<tr>${el}</tr>`).join('')}</tbody>`;
+            table = `<table class="table">${title}${tbody}</table>`;
+        } else {
+            table = `<div>查無資料</div>`;
+        }
     }
 
     document.getElementById(filterId).innerHTML = table;

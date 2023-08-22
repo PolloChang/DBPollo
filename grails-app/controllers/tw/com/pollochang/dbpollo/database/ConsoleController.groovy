@@ -12,7 +12,7 @@ class ConsoleController {
 
         LinkedHashMap result = [:]
 
-        result.data = dbExecutionService.execute(params)
+        result = dbExecutionService.execute(params)
 
         render result as JSON
     }

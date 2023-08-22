@@ -14,6 +14,7 @@
 </head>
 
 <body>
+<main>
     <form id="${sqlScriptFrom}">
 
         <div class="accordion" id="accordion">
@@ -105,6 +106,21 @@
             </div>
         </div>
     </div>
+</main>
+<div class="navbar navbar-inverse navbar-fixed-bottom"">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div id="errorMessageId" ></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div id="successMessageId" ></div>
+            </div>
+        </div>
+    </div>
+</footer>
 <script type="text/javascript">
     document.addEventListener("keydown", function(e) {
         if (e.ctrlKey && e.code === "Enter"){ //KeyC

@@ -15,7 +15,9 @@ class DbExecutionService {
 
     DriverManagerDataSource driverManagerDataSource
 
-    List execute(GrailsParameterMap params) {
+    LinkedHashMap execute(GrailsParameterMap params) {
+
+        LinkedHashMap result = [:]
 
         DBUtil dbUtil = new DBUtil()
 
@@ -63,13 +65,16 @@ class DbExecutionService {
                 }else {
                     resultList = []
                 }
+
+                result.success = "執行成功"
             }
         }catch (SQLException ex){
-
+            result.error = ex.message
             log.error(ex.message)
+        }finally {
+            result.data = resultList
+            return result
         }
-
-        return resultList
     }
     
 
