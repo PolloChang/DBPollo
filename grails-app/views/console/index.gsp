@@ -11,6 +11,15 @@
 <html>
 <head>
     <meta name="layout" content="main"/>
+    <asset:stylesheet src="codemirror/lib/codemirror.css" />
+    <asset:javascript src="codemirror/lib/codemirror.js" />
+    <asset:javascript src="codemirror/sql.js" />
+    <style>
+    .CodeMirror {
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+    </style>
 </head>
 
 <body>
@@ -79,7 +88,7 @@
                 <div class="col-12">
                     <div class="form-group col-form-label">
                         <label for="sql-text">sql</label>
-                        <g:textArea name="sql-text" class="form-control" id="exampleFormControlTextarea1" rows="10" value="select * from bs_user bu " />
+                        <g:textArea name="sql-text" class="form-control" id="sql-text" rows="10" value="select * from bs_user bu " />
                     </div>
                 </div>
             </div>
@@ -87,11 +96,7 @@
                 <div class="col-12">
                     <button
                             type="button" class="btn btn-primary"
-                            data-dict="ajax"
-                            data-action="filter"
-                            data-url="${createLink(controller: 'console', action: "sqlScript")}"
-                            data-form-id="${sqlScriptFrom}"
-                            data-filter-id="${filterId}"
+                            onclick="executeQuery()"
                     >
                         ${message(code: "default.button.execute.label")}
                     </button>
@@ -107,7 +112,7 @@
         </div>
     </div>
 </main>
-<div class="navbar navbar-inverse navbar-fixed-bottom"">
+<div class="navbar navbar-inverse navbar-fixed-bottom">
     <div class="container-fluid">
         <div class="row">
             <div class="col">
@@ -120,20 +125,51 @@
             </div>
         </div>
     </div>
+</div>
 </footer>
 <script type="text/javascript">
+
+    var editor;
+
+    window.onload = function() {
+        let mime = 'text/x-plsql';
+        // get mime type
+        if (window.location.href.indexOf('mime=') > -1) {
+            mime = window.location.href.substr(window.location.href.indexOf('mime=') + 5);
+        }
+        editor = CodeMirror.fromTextArea(document.getElementById('sql-text'), {
+            mode: mime,
+            indentWithTabs: true,
+            smartIndent: true,
+            lineNumbers: true,
+            matchBrackets : true,
+            autofocus: true,
+            extraKeys: {"Ctrl-m": "autocomplete"},
+            hintOptions: {tables: {
+                    users: ["name", "score", "birthDate"],
+                    countries: ["name", "population", "size"]
+                }}
+        });
+    };
+
     document.addEventListener("keydown", function(e) {
         if (e.ctrlKey && e.code === "Enter"){ //KeyC
-
-            let obj = new Map(); //要傳到下一個 function 的物件
-            obj.url = "${createLink(controller: 'console', action: "sqlScript")}";
-            obj.filterId = "${filterId}";
-            obj.data = jQuery(document.getElementById("${sqlScriptFrom}")).serialize();
-            obj.action = "filter";
-            executeAjax(obj);
+            executeQuery();
             e.preventDefault();
         }
     });
+
+    function executeQuery(){
+        document.getElementById('sql-text').value = editor.getValue();
+        let obj = new Map(); //要傳到下一個 function 的物件
+        obj.url = "${createLink(controller: 'console', action: "sqlScript")}";
+        obj.filterId = "${filterId}";
+        obj.data = jQuery(document.getElementById("${sqlScriptFrom}")).serialize();
+        obj.action = "filter";
+        executeAjax(obj);
+    }
+
+
 </script>
 </body>
 </html>
