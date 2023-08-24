@@ -11,10 +11,11 @@
 <html>
 <head>
     <meta name="layout" content="main"/>
+    <asset:javascript src="sqlParser.js" />
     <asset:stylesheet src="codemirror/lib/codemirror.css" />
+    <asset:stylesheet src="codemirror/addon/hint/show-hint.css" />
     <asset:javascript src="codemirror/lib/codemirror.js" />
     <asset:javascript src="codemirror/sql.js" />
-    <asset:stylesheet src="codemirror/addon/hint/show-hint.css" />
     <asset:javascript src="codemirror/addon/hint/show-hint.js"/>
     <asset:javascript src="codemirror/addon/hint/sql-hint.js"/>
     <style>
@@ -139,6 +140,7 @@
 <script type="text/javascript">
 
     var editor;
+    var sqlParser = window.sqlParser;
 
     window.onload = function() {
         let mime = 'text/x-plsql';
@@ -182,7 +184,7 @@
     function executeSql(){
         document.getElementById('sql-text').value = editor.getValue();
         let obj = new Map(); //要傳到下一個 function 的物件
-        obj.url = "${createLink(controller: 'console', action: "sqlScript")}";
+        obj.url = "${createLink(controller: 'console', action: "executeSql")}";
         obj.filterId = "${filterId}";
         obj.data = jQuery(document.getElementById("${sqlScriptFrom}")).serialize();
         obj.action = "filter";
@@ -191,11 +193,28 @@
 
     function changeHintOptions(){
         let sqlContent = editor.getValue();
-        let options = {
-            completeSingle: false,
-            tables : {"k":["field1", "col2"], "kk":["asc", "bdef"]}
-        };
-        editor.setOption("hintOptions", options);
+        try {
+            sqlParser.parse(sqlContent);
+            shownMessage('errorMessageId',null ,'text-danger');
+        }catch (e){
+            shownMessage('errorMessageId','語法不正確' ,'text-danger');
+            return;
+        }
+        document.getElementById('sql-text').value = editor.getValue();
+
+        jQuery.ajax({
+            url: "${createLink(controller: 'console', action: "getParserSQLAndGetTableColumns")}",
+            data: jQuery(document.getElementById("${sqlScriptFrom}")).serialize(),
+            dataType: "json",
+            success: function (json) {
+                console.log(json);
+            },
+        });
+        // let options = {
+        //     completeSingle: false,
+        //     tables : {"k":["field1", "col2"], "kk":["asc", "bdef"]}
+        // };
+        // editor.setOption("hintOptions", options);
     }
 
 
