@@ -14,6 +14,9 @@
     <asset:stylesheet src="codemirror/lib/codemirror.css" />
     <asset:javascript src="codemirror/lib/codemirror.js" />
     <asset:javascript src="codemirror/sql.js" />
+    <asset:stylesheet src="codemirror/addon/hint/show-hint.css" />
+    <asset:javascript src="codemirror/addon/hint/show-hint.js"/>
+    <asset:javascript src="codemirror/addon/hint/sql-hint.js"/>
     <style>
     .CodeMirror {
         border-top: 1px solid black;
@@ -96,9 +99,15 @@
                 <div class="col-12">
                     <button
                             type="button" class="btn btn-primary"
-                            onclick="executeQuery()"
+                            onclick="executeSql()"
                     >
                         ${message(code: "default.button.execute.label")}
+                    </button>
+                    <button
+                            type="button" class="btn btn-primary"
+                            onclick="changeHintOptions()"
+                    >
+                        changeHintOptions
                     </button>
                 </div>
             </div>
@@ -144,22 +153,33 @@
             lineNumbers: true,
             matchBrackets : true,
             autofocus: true,
-            extraKeys: {"Ctrl-m": "autocomplete"},
-            hintOptions: {tables: {
+            extraKeys: {"Ctrl-\\": "autocomplete"},
+            hintOptions: {
+                completeSingle: false,
+                tables: {
                     users: ["name", "score", "birthDate"],
                     countries: ["name", "population", "size"]
-                }}
+                }
+            }
+        });
+
+        editor.on('keypress',() =>{
+           editor.showHint();
+            changeHintOptions();
         });
     };
 
     document.addEventListener("keydown", function(e) {
         if (e.ctrlKey && e.code === "Enter"){ //KeyC
-            executeQuery();
+            executeSql();
             e.preventDefault();
         }
     });
 
-    function executeQuery(){
+    /**
+     * 執行SQL
+     */
+    function executeSql(){
         document.getElementById('sql-text').value = editor.getValue();
         let obj = new Map(); //要傳到下一個 function 的物件
         obj.url = "${createLink(controller: 'console', action: "sqlScript")}";
@@ -167,6 +187,15 @@
         obj.data = jQuery(document.getElementById("${sqlScriptFrom}")).serialize();
         obj.action = "filter";
         executeAjax(obj);
+    }
+
+    function changeHintOptions(){
+        let sqlContent = editor.getValue();
+        let options = {
+            completeSingle: false,
+            tables : {"k":["field1", "col2"], "kk":["asc", "bdef"]}
+        };
+        editor.setOption("hintOptions", options);
     }
 
 
