@@ -5,11 +5,6 @@ import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 
-import java.sql.Connection
-import java.sql.PreparedStatement
-import java.sql.ResultSet
-import java.sql.SQLException
-
 @Transactional
 class DbExecutionService {
 

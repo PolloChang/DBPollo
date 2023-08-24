@@ -29,6 +29,7 @@ class ParserSQLService {
         LinkedHashMap result = [:]
 
         DBUtil dbUtil = new DBUtil()
+        Execution execution = new Execution()
 
         String driverClassName
         String jdbcUrl
@@ -60,31 +61,12 @@ class ParserSQLService {
         driverManagerDataSource.setPassword(password)
         driverManagerDataSource.setUrl(jdbcUrl)
 
-        tableList.each {tableName ->
-
-        }
+//        tableList.each {tableName ->
+//
+//        }
         println "querySchemaSql = "+querySchemaSql
-        try(
-                Connection connection = driverManagerDataSource.getConnection()
-                PreparedStatement ps = connection.prepareStatement(querySchemaSql)
-        ){
+        println execution.executeSql(driverManagerDataSource,querySchemaSql,['bs101'])
 
-            try (ResultSet rs = ps.executeQuery()) {
-
-                if(rs != null){
-                    resultList = dbUtil.resultSetToArrayList(rs)
-                }else {
-                    resultList = []
-                }
-
-                result.success = "執行成功"
-            }
-        }catch (SQLException ex){
-            result.error = ex.message
-            log.error(ex.message)
-        }
-
-        println resultList
 
 
         return result
