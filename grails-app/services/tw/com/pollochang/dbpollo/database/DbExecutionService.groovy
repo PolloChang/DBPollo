@@ -20,6 +20,7 @@ class DbExecutionService {
         LinkedHashMap result = [:]
 
         DBUtil dbUtil = new DBUtil()
+        Execution execution = new Execution()
 
         String driverClassName
         String jdbcUrl
@@ -50,31 +51,9 @@ class DbExecutionService {
         driverManagerDataSource.setPassword(password)
         driverManagerDataSource.setUrl(jdbcUrl)
 
-//        Connection connection
-        List resultList
-        //try-with-resources
-        try(
-                Connection connection = driverManagerDataSource.getConnection()
-                PreparedStatement ps = connection.prepareStatement(sqlText)
-        ){
+        result = execution.executeSql(driverManagerDataSource,sqlText)
 
-            try (ResultSet rs = ps.executeQuery()) {
-
-                if(rs != null){
-                    resultList = dbUtil.resultSetToArrayList(rs)
-                }else {
-                    resultList = []
-                }
-
-                result.success = "執行成功"
-            }
-        }catch (SQLException ex){
-            result.error = ex.message
-            log.error(ex.message)
-        }finally {
-            result.data = resultList
-            return result
-        }
+        return result
     }
     
 
