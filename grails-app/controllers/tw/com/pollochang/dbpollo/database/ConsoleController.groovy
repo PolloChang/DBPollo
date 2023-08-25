@@ -1,6 +1,8 @@
 package tw.com.pollochang.dbpollo.database
 
 import grails.converters.JSON
+import tw.com.pollochang.dbpollo.codeMirror.HintOptions
+import tw.com.pollochang.util.JsonUtil
 
 class ConsoleController {
 
@@ -27,11 +29,10 @@ class ConsoleController {
      * @return
      */
     JSON getParserSQLAndGetTableColumns(){
-        LinkedHashMap result = [:]
-
-        parserSQLService.getParserSQLAndGetTableColumns(params)
-
-        render result as JSON
+        HintOptions hintOptions = parserSQLService.getParserSQLAndGetTableColumns(params)
+        JSON renderJSON = hintOptions as JSON
+        log.debug(renderJSON.toString())
+        render hintOptions as JSON
     }
 
     /**

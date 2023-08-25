@@ -207,14 +207,9 @@
             data: jQuery(document.getElementById("${sqlScriptFrom}")).serialize(),
             dataType: "json",
             success: function (json) {
-                console.log(json);
+                editor.setOption("hintOptions", json);
             },
         });
-        // let options = {
-        //     completeSingle: false,
-        //     tables : {"k":["field1", "col2"], "kk":["asc", "bdef"]}
-        // };
-        // editor.setOption("hintOptions", options);
     }
 
 
