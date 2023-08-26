@@ -178,3 +178,58 @@ COMMENT ON COLUMN bs_app_group.app_group_name IS '程式群組名稱';
 
 CREATE UNIQUE INDEX bs_app_group_idx1 ON bs_app_group ( app_group_no );
 
+CREATE TABLE db_config (
+    id bigint NOT NULL generated always as identity,
+    version INTEGER,
+    man_created VARCHAR(20) NOT NULL,
+    date_created TIMESTAMP DEFAULT current_timestamp NOT NULL,
+    man_last_updated VARCHAR(20),
+    last_updated TIMESTAMP,
+    name VARCHAR(20),
+    type VARCHAR(20),
+    host VARCHAR(20),
+    port INTEGER,
+    dbname VARCHAR(20),
+    username VARCHAR(20),
+    password VARCHAR(200),
+    CONSTRAINT db_config_pk PRIMARY KEY (id)
+);
+COMMENT ON TABLE db_config IS '程式群組';
+COMMENT ON COLUMN db_config.id IS 'pk';
+COMMENT ON COLUMN db_config.version IS '資料版本';
+COMMENT ON COLUMN db_config.man_created IS '建檔人員';
+COMMENT ON COLUMN db_config.date_created IS '建檔時間';
+COMMENT ON COLUMN db_config.man_last_updated IS '最後異動人員';
+COMMENT ON COLUMN db_config.last_updated IS '最後異動時間';
+COMMENT ON COLUMN db_config.name IS '資料庫連線名稱';
+COMMENT ON COLUMN db_config.type IS '資料庫類型';
+COMMENT ON COLUMN db_config.host IS '資料庫位址';
+COMMENT ON COLUMN db_config.port IS '連線阜';
+COMMENT ON COLUMN db_config.dbname IS '資料庫名稱';
+COMMENT ON COLUMN db_config.username IS '使用者名稱';
+COMMENT ON COLUMN db_config.password IS '使用者密碼';
+
+CREATE TABLE sql_history (
+      id bigint NOT NULL generated always as identity,
+      version INTEGER,
+      man_created VARCHAR(20) NOT NULL,
+      date_created TIMESTAMP DEFAULT current_timestamp NOT NULL,
+      man_last_updated VARCHAR(20),
+      last_updated TIMESTAMP,
+      db_config_id bigint,
+      execute_type boolean,
+      sql_content text,
+      execute_message VARCHAR,
+      CONSTRAINT sql_history_pk PRIMARY KEY (id)
+);
+COMMENT ON TABLE sql_history IS '程式群組';
+COMMENT ON COLUMN sql_history.id IS 'pk';
+COMMENT ON COLUMN sql_history.version IS '資料版本';
+COMMENT ON COLUMN sql_history.man_created IS '建檔人員';
+COMMENT ON COLUMN sql_history.date_created IS '建檔時間';
+COMMENT ON COLUMN sql_history.man_last_updated IS '最後異動人員';
+COMMENT ON COLUMN sql_history.last_updated IS '最後異動時間';
+comment on column sql_history.db_config_id is '連接資料庫';
+comment on column sql_history.execute_type is '執行狀況';
+comment on column sql_history.sql_content is '執行SQL內容';
+comment on column sql_history.execute_message is '執行後的訊息';
