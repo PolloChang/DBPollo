@@ -1,9 +1,11 @@
 package tw.com.pollochang.dbpollo.manage
 
 import grails.converters.JSON
+import org.grails.datastore.gorm.GormEntity
+import tw.com.pollochang.common.CommonController
 import tw.com.pollochang.dbpollo.database.DbConfig
 
-class DbManageController {
+class DbManageController extends CommonController{
 
     DbConfigService dbConfigService
 
@@ -29,53 +31,39 @@ class DbManageController {
 
     JSON insert(){
         LinkedHashMap result = dbConfigService.insert(params)
-        if(!result.actionType){
-            result.actionMessage = g.render(template: '/tw/com/pollochang/bs/errorMessage' , model: [beanI:result.bean])
-        }
-        else{
-            //更新tab資訊
 
-            List scriptArrays = []
-            scriptArrays << [mode: 'execute', script: """parent.openTab(
-                    'DBMANAGE',
-                    'DBMANAGE-${result.bean?.id}',
-                    '${result.bean?.name?:""}',
-                    '${createLink(controller: 'dbManage',action: 'editPage',params: [id:result.bean?.id])}'
-                );"""]
-            scriptArrays << [mode: 'execute', script: """parent.closeTab('DM_MANAGE-0');"""]
-            result.scriptArrays = scriptArrays
-        }
+        result =  afterInsert(
+                result.bean as GormEntity,
+                result.actionType,
+                "DBMANAGE",
+                result.bean?.name?:"",
+                createLink(controller: 'dbManage',action: 'editPage',params: [id:result.bean?.id]) as String
+        )
         render result as JSON
     }
 
     JSON update(){
         LinkedHashMap result = dbConfigService.update(params)
-        if(!result.actionType){
-            result.actionMessage = g.render(template: '/tw/com/pollochang/bs/errorMessage' , model: [beanI:result.bean])
-        }
-        else{
-            //更新tab資訊
 
-            List scriptArrays = []
-            scriptArrays << [mode: 'execute', script: """parent.refreshTab({
-                        tabId:'DBMANAGE-${result.bean?.id}',
-                        src: '${createLink(controller: 'dbManage',action: 'editPage',params: [id:result.bean?.id])}'
-                    }
-                );"""]
-            result.scriptArrays = scriptArrays
-        }
+        result = afterUpdate(
+            result.bean as GormEntity,
+            result.actionType,
+            "DBMANAGE",
+            createLink(controller: 'dbManage',action: 'editPage',params: [id:result.bean?.id]) as String
+        )
+
+
         render result as JSON
     }
 
     JSON delete(){
         LinkedHashMap result = dbConfigService.delete(params)
-        List scriptArrays = []
-        if(!result.actionType){
-            result.actionMessage = g.render(template: '/tw/com/pollochang/bs/errorMessage' , model: [beanI:result.bean])
-        }else{
-            scriptArrays << [mode: 'execute', script: """parent.closeTab('DBMANAGE-${result.bean?.id}');"""]
-            result.scriptArrays = scriptArrays
-        }
+        result = afterDelete(
+                result.bean as GormEntity,
+                params?.id as long,
+                result.actionType,
+                "DBMANAGE"
+        )
         render result as JSON
     }
 }

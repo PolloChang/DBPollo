@@ -1,9 +1,8 @@
 package tw.com.pollochang.dbpollo.database
 
-import tw.com.pollochang.base.BsDomain
+import tw.com.pollochang.common.CommonDomain
 
-class SqlHistory extends BsDomain{
-    static auditable = [ignore: ['dateCreated', 'lastUpdated', 'manCreated', 'manLastUpdated']]
+class SqlHistory extends CommonDomain{
 
     DbConfig dbConfig
     boolean executeType = false
