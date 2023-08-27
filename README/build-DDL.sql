@@ -98,7 +98,7 @@ CREATE TABLE bs_request_map (
     man_last_updated VARCHAR(20),
     last_updated TIMESTAMP,
     note VARCHAR(50),
-    app_no CHAR(5) NOT NULL,
+    app_no CHAR(10) NOT NULL,
     app_name VARCHAR(10) NOT NULL,
     idx INTEGER DEFAULT 0 NOT NULL,
     is_show BOOLEAN DEFAULT true NOT NULL,
@@ -194,7 +194,7 @@ CREATE TABLE db_config (
     password VARCHAR(200),
     CONSTRAINT db_config_pk PRIMARY KEY (id)
 );
-COMMENT ON TABLE db_config IS '程式群組';
+COMMENT ON TABLE db_config IS '資料庫設定檔';
 COMMENT ON COLUMN db_config.id IS 'pk';
 COMMENT ON COLUMN db_config.version IS '資料版本';
 COMMENT ON COLUMN db_config.man_created IS '建檔人員';
@@ -204,7 +204,7 @@ COMMENT ON COLUMN db_config.last_updated IS '最後異動時間';
 COMMENT ON COLUMN db_config.name IS '資料庫連線名稱';
 COMMENT ON COLUMN db_config.type IS '資料庫類型';
 COMMENT ON COLUMN db_config.host IS '資料庫位址';
-COMMENT ON COLUMN db_config.port IS '連線阜';
+COMMENT ON COLUMN db_config.port IS '連接埠';
 COMMENT ON COLUMN db_config.dbname IS '資料庫名稱';
 COMMENT ON COLUMN db_config.username IS '使用者名稱';
 COMMENT ON COLUMN db_config.password IS '使用者密碼';
@@ -222,7 +222,7 @@ CREATE TABLE sql_history (
       execute_message VARCHAR,
       CONSTRAINT sql_history_pk PRIMARY KEY (id)
 );
-COMMENT ON TABLE sql_history IS '程式群組';
+COMMENT ON TABLE sql_history IS 'sql執行紀錄';
 COMMENT ON COLUMN sql_history.id IS 'pk';
 COMMENT ON COLUMN sql_history.version IS '資料版本';
 COMMENT ON COLUMN sql_history.man_created IS '建檔人員';

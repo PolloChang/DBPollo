@@ -10,7 +10,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta name="layout" content="main"/>
+    <meta name="layout" content="console"/>
     <asset:javascript src="sqlParser.js" />
     <asset:stylesheet src="codemirror/lib/codemirror.css" />
     <asset:stylesheet src="codemirror/addon/hint/show-hint.css" />

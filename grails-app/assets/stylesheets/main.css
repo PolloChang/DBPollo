@@ -75,7 +75,8 @@ img {
 
 .content h1 {
     border-bottom: 1px solid #CCCCCC;
-    padding: 0 0 1em 0;
+    margin: 0.8em 1em 0.3em;
+    padding: 0 0.25em;
 }
 
 .scaffold-list h1 {
@@ -96,11 +97,13 @@ img {
 }
 
 .footer {
-    background: #424649;
+    background: #828282;
     color: #ffffff;
     clear: both;
     font-size: 1em;
-    padding: 2em 0;
+    margin-top: 1.5em;
+    padding: 1em;
+    padding-bottom: 2em;
     min-height: 1em;
 }
 
@@ -234,7 +237,7 @@ fieldset,
 label {
     cursor: pointer;
     display: inline-block;
-    margin: 0 0.5em 0 0;
+    margin: 0 0.25em 0 0;
 }
 
 input, select, textarea {
@@ -315,8 +318,10 @@ fieldset.embedded legend {
 
 .errors,
 .message {
-    margin: 1em 0;
-    padding: 0.5em;
+    font-size: 0.8em;
+    line-height: 2;
+    margin: 1em 2em;
+    padding: 0.25em;
 }
 
 .message {
@@ -384,7 +389,7 @@ input:invalid:focus, select:invalid:focus, textarea:invalid:focus {
 /* TABLES */
 
 table {
-    border: 1px solid #DFDFDF;
+    border-top: 1px solid #DFDFDF;
     border-collapse: collapse;
     width: 100%;
     margin-bottom: 1em;
@@ -586,4 +591,8 @@ a.skip {
 img.grails-logo {
     height:340px;
     margin-top:-10px;
+}
+
+.app-second-tab{
+    background-color: #cccccc;
 }
