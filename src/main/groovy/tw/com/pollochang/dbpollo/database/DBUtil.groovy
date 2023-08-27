@@ -147,6 +147,26 @@ class DBUtil {
         return result
     }
 
+    String testSql(DBType dbType){
+        String result
+
+        switch (dbType){
+            case DBType.POSTGRESQL : result = "select count(1) cnt"
+                break
+            case [DBType.ORACLE , DBType.ORACLE_SID] : result = ""
+                break
+            case DBType.DB2 : result = ""
+                break
+            case DBType.MYSQL : result = ""
+                break
+            case DBType.MSSQL : result = ""
+                break
+            default : throw new RuntimeException("No supper database.")
+        }
+
+        return result
+    }
+
     List resultSetToArrayList(ResultSet rs) throws SQLException{
         ResultSetMetaData md = rs.getMetaData()
         int columns = md.getColumnCount()

@@ -50,6 +50,31 @@ class DbExecutionService {
 
         return result
     }
-    
+
+
+    boolean testDbConnected(DbConfig dbConfig){
+
+        LinkedHashMap result = [:]
+        DBUtil dbUtil = new DBUtil()
+        Execution execution = new Execution()
+        String driverClassName
+        String jdbcUrl
+        String sqlText
+        driverClassName = dbUtil.getDriverClassName(dbConfig.type)
+        jdbcUrl = dbUtil.getJdbcUrl(dbConfig.type,dbConfig.host,dbConfig.port as int,dbConfig.dbname)
+        sqlText = dbUtil.testSql(dbConfig.type)
+
+        driverManagerDataSource = new DriverManagerDataSource()
+        driverManagerDataSource.setDriverClassName(driverClassName)
+        driverManagerDataSource.setUsername(dbConfig.username)
+        driverManagerDataSource.setPassword(dbConfig.password)
+        driverManagerDataSource.setUrl(jdbcUrl)
+        result = execution.executeSql(driverManagerDataSource,sqlText)
+        if(result.success){
+            return true
+        }else{
+            return false
+        }
+    }
 
 }

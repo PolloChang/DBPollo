@@ -8,6 +8,7 @@ import tw.com.pollochang.dbpollo.database.DbConfig
 class DbManageController extends CommonController{
 
     DbConfigService dbConfigService
+    def dbExecutionService
 
     def index() {
         render view: "/tw/com/pollochang/dbpollo/manage/dbManage/index"
@@ -64,6 +65,21 @@ class DbManageController extends CommonController{
                 result.actionType,
                 "DBMANAGE"
         )
+        render result as JSON
+    }
+
+    JSON testDbConnected(){
+        LinkedHashMap result = [:]
+
+        DbConfig dbConfig = DbConfig.read(params?.id as long)
+        boolean testResult = dbExecutionService.testDbConnected(dbConfig)
+        List scriptArrays = []
+        if(testResult){
+            scriptArrays << [mode: 'execute', script: """alert('測試成功');"""]
+        }else {
+            scriptArrays << [mode: 'execute', script: """alert('測試失敗');"""]
+        }
+        result.scriptArrays = scriptArrays
         render result as JSON
     }
 }

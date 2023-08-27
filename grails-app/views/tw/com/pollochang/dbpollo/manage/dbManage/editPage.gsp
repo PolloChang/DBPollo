@@ -45,6 +45,17 @@
                 </dict:button>
             </div>
 
+            <div class="btn-group btn-info" role="group">
+                <dict:button
+                        class="btn-info"
+                        data-dict="ajax"
+                        data-form-id="${formId}"
+                        data-url="${createLink(controller: "dbManage",action: "testDbConnected" ,id: dbConfigI?.id)}"
+                >
+                    ${message(code: "dbpollo.button.test.db.connected.label")}
+                </dict:button>
+            </div>
+
         </div>
     </div>
 </div>
