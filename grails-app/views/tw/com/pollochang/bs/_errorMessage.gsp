@@ -1,0 +1,1 @@
+<div class="alert alert-danger alert-dismissible fade show" role="alert"><ul class="m-0"><g:hasErrors bean="${beanI}"><g:eachError var="err" bean="${beanI}"><li><g:message error="${err}" /></li></g:eachError></g:hasErrors></ul><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>

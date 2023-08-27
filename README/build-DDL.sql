@@ -233,3 +233,5 @@ comment on column sql_history.db_config_id is '連接資料庫';
 comment on column sql_history.execute_type is '執行狀況';
 comment on column sql_history.sql_content is '執行SQL內容';
 comment on column sql_history.execute_message is '執行後的訊息';
+
+GRANT REFERENCES, INSERT, DELETE, UPDATE, SELECT, TRIGGER, truncate on ALL TABLES IN SCHEMA public TO dbpollo_ap;

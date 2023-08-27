@@ -18,6 +18,7 @@ class DbConfig extends BsDomain{
         comment: '資料庫設定檔'
         version: true
 
+        id                  column: "id",               generator:'identity'
         manCreated			column:"MAN_CREATED",		comment:"建檔人員"
         dateCreated			column:"DATE_CREATED",		comment:"建檔時間"
         manLastUpdated		column:"MAN_LAST_UPDATED",	comment:"最後異動人員"
