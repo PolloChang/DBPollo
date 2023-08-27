@@ -192,6 +192,7 @@ CREATE TABLE db_config (
     dbname VARCHAR(20),
     username VARCHAR(20),
     password VARCHAR(200),
+    password_salt VARCHAR(20),
     CONSTRAINT db_config_pk PRIMARY KEY (id)
 );
 COMMENT ON TABLE db_config IS '資料庫設定檔';
@@ -208,6 +209,7 @@ COMMENT ON COLUMN db_config.port IS '連接埠';
 COMMENT ON COLUMN db_config.dbname IS '資料庫名稱';
 COMMENT ON COLUMN db_config.username IS '使用者名稱';
 COMMENT ON COLUMN db_config.password IS '使用者密碼';
+COMMENT ON COLUMN db_config.password_salt IS '使用者密碼鹽';
 
 CREATE TABLE sql_history (
       id bigint NOT NULL generated always as identity,

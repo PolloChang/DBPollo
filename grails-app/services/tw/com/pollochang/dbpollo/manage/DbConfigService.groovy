@@ -1,7 +1,9 @@
 package tw.com.pollochang.dbpollo.manage
 
+import com.pollochang.util.AES
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
+import org.apache.commons.lang3.RandomStringUtils
 import tw.com.pollochang.common.CommonService
 import tw.com.pollochang.dbpollo.database.DBType
 import tw.com.pollochang.dbpollo.database.DbConfig
@@ -111,7 +113,10 @@ class DbConfigService extends CommonService {
     LinkedHashMap insert(GrailsParameterMap params) {
         return saveInstance(new DbConfig(), "dbConfig",include_col,params, { DbConfig dbConfigI ->
             DBType dbType = DBType.valueOf(params.dbConfig.type as String)
+            String random = RandomStringUtils.randomAlphanumeric(10)
+            params.dbConfig.password = AES.encrypt(params.dbConfig.password,random)
             params.dbConfig.type = dbType
+            dbConfigI.passwordSalt = random
         })
     }
 
@@ -121,9 +126,13 @@ class DbConfigService extends CommonService {
      * @return
      */
     LinkedHashMap update(GrailsParameterMap params) {
+
         return saveInstance(DbConfig.get(params.id as long), "dbConfig",include_col,params, { DbConfig dbConfigI ->
             DBType dbType = DBType.valueOf(params.dbConfig.type as String)
+            String random = RandomStringUtils.randomAlphanumeric(10)
+            params.dbConfig.password = AES.encrypt(params.dbConfig.password,random)
             params.dbConfig.type = dbType
+            dbConfigI.passwordSalt = random
         })
     }
 

@@ -1,6 +1,6 @@
 package tw.com.pollochang.dbpollo.database
 
-
+import com.pollochang.util.AES
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.jdbc.datasource.DriverManagerDataSource
@@ -60,6 +60,7 @@ class DbExecutionService {
         String driverClassName
         String jdbcUrl
         String sqlText
+        String password = AES.decrypt(dbConfig.password,dbConfig.passwordSalt)
         driverClassName = dbUtil.getDriverClassName(dbConfig.type)
         jdbcUrl = dbUtil.getJdbcUrl(dbConfig.type,dbConfig.host,dbConfig.port as int,dbConfig.dbname)
         sqlText = dbUtil.testSql(dbConfig.type)
@@ -67,7 +68,7 @@ class DbExecutionService {
         driverManagerDataSource = new DriverManagerDataSource()
         driverManagerDataSource.setDriverClassName(driverClassName)
         driverManagerDataSource.setUsername(dbConfig.username)
-        driverManagerDataSource.setPassword(dbConfig.password)
+        driverManagerDataSource.setPassword(password)
         driverManagerDataSource.setUrl(jdbcUrl)
         result = execution.executeSql(driverManagerDataSource,sqlText)
         if(result.success){

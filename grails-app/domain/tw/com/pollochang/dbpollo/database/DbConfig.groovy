@@ -11,6 +11,7 @@ class DbConfig extends CommonDomain{
     String dbname
     String username
     String password
+    String passwordSalt
 
     static mapping = {
         table: 'db_config'
@@ -29,6 +30,7 @@ class DbConfig extends CommonDomain{
         dbname              column: "dbname",           comment: "資料庫名稱"
         username            column: "username",         comment: "使用者名稱"
         password            column: "password",         comment: "使用者密碼"
+        passwordSalt        column: "password_salt",    comment: "使用者密碼鹽"
     }
 
     static constraints = {
@@ -42,6 +44,7 @@ class DbConfig extends CommonDomain{
         host                (nullable: false,blank: false,maxSize: 20)
         dbname              (nullable: false,blank: false,maxSize: 20)
         username            (nullable: false,blank: false,maxSize: 20)
-        password            (nullable: false,blank: false,maxSize: 20)
+        password            (nullable: false,blank: false,maxSize: 200)
+        passwordSalt        (nullable: false,blank: false,maxSize: 20)
     }
 }

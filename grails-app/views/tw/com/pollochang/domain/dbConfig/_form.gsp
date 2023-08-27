@@ -62,7 +62,7 @@
             ${message(code: "dbConfig.password.label")}
         </th>
         <td>
-            <g:passwordField class="form-control" name="dbConfig.password" value="${dbConfigI.type}" autocomplete="off" />
+            <g:passwordField class="form-control" name="dbConfig.password" value="${com.pollochang.util.AES.decrypt(dbConfigI.password,dbConfigI.passwordSalt)}" autocomplete="off" />
         </td>
     </tr>
     </tbody>
