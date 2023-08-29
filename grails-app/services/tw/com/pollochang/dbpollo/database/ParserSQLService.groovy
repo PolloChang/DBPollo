@@ -1,5 +1,6 @@
 package tw.com.pollochang.dbpollo.database
 
+import com.pollochang.util.AES
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import net.sf.jsqlparser.parser.CCJSqlParserUtil
@@ -39,7 +40,7 @@ class ParserSQLService {
         String password = params?."db-password"
         String sqlText = params?."sql-text"
 
-        String querySchemaSql = dbUtil.geColumnSchema(dbType)
+        String querySchemaSql = dbUtil.getColumnSchema(dbType)
         String driverClassName = dbUtil.getDriverClassName(dbType)
         String jdbcUrl = dbUtil.getJdbcUrl(dbType,dbHost,dbPort as int,dbName)
         Statement statement = CCJSqlParserUtil.parse(sqlText)
@@ -71,5 +72,22 @@ class ParserSQLService {
         }
 
         return hintOptions
+    }
+
+    /**
+     * 列出資料庫的schema
+     * @param dbConfig
+     * @return
+     */
+    LinkedHashMap listDatabaseSchemas(DbConfig dbConfig){
+        DBUtil dbUtil = new DBUtil()
+        Execution execution = new Execution()
+        String listDatabaseSchemasSql = dbUtil.listDatabaseSchemas(dbConfig.type)
+
+        driverManagerDataSource = new DriverManagerDataSource()
+
+        LinkedHashMap result = execution.executeSql(driverManagerDataSource,dbConfig,listDatabaseSchemasSql)
+
+        return result
     }
 }

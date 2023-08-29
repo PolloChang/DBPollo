@@ -126,7 +126,52 @@ class DBUtil {
         return jdbcUrl.toString()
     }
 
-    String geColumnSchema(DBType dbType){
+    String listDatabaseSchemas(DBType dbType){
+        String result
+
+        switch (dbType){
+            case DBType.POSTGRESQL : result = "select schema_name from information_schema.schemata"
+                break
+            case [DBType.ORACLE , DBType.ORACLE_SID] : result = ""
+                break
+            case DBType.DB2 : result = ""
+                break
+            case DBType.MYSQL : result = ""
+                break
+            case DBType.MSSQL : result = ""
+                break
+            default : throw new RuntimeException("No supper database.")
+        }
+
+        return result
+    }
+
+    /**
+     * 取得 schema 所有的的資料表名稱
+     * @param dbType
+     * @return
+     */
+    String getSchemaAllTables(DBType dbType){
+        String result
+
+        switch (dbType){
+            case DBType.POSTGRESQL : result = "select table_name from information_schema.tables where table_schema = ? order by table_name "
+                break
+            case [DBType.ORACLE , DBType.ORACLE_SID] : result = ""
+                break
+            case DBType.DB2 : result = ""
+                break
+            case DBType.MYSQL : result = ""
+                break
+            case DBType.MSSQL : result = ""
+                break
+            default : throw new RuntimeException("No supper database.")
+        }
+
+        return result
+    }
+
+    String getColumnSchema(DBType dbType){
 
         String result
 

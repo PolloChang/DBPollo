@@ -45,4 +45,16 @@ class ConsoleController {
         render result as JSON
     }
 
+    /**
+     * 列出資料庫的schema
+     * @return
+     */
+    JSON listDatabaseSchemas(){
+        long dbConfigId = params?. dbConfigId as long
+        DbConfig dbConfig = DbConfig.read(dbConfigId)
+        LinkedHashMap result = parserSQLService.listDatabaseSchemas(dbConfig)
+
+        render result as JSON
+    }
+
 }

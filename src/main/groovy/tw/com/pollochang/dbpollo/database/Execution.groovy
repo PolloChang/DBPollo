@@ -1,5 +1,6 @@
 package tw.com.pollochang.dbpollo.database
 
+import com.pollochang.util.AES
 import groovy.util.logging.Slf4j
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 
@@ -10,6 +11,33 @@ import java.sql.SQLException
 
 @Slf4j
 class Execution {
+
+    /**
+     * 執行SQL
+     * @param driverManagerDataSource
+     * @param dbConfig
+     * @param sqlStr
+     * @return
+     */
+    LinkedHashMap executeSql(
+            DriverManagerDataSource driverManagerDataSource,
+            DbConfig dbConfig,
+            String sqlStr
+    ){
+        DBUtil dbUtil = new DBUtil()
+        String driverClassName = dbUtil.getDriverClassName(dbConfig.type)
+        String jdbcUrl = dbUtil.getJdbcUrl(dbConfig.type,dbConfig.host,dbConfig.port as int,dbConfig.dbname)
+        String password = AES.decrypt(dbConfig.password,dbConfig.passwordSalt)
+        driverManagerDataSource.setDriverClassName(driverClassName)
+        driverManagerDataSource.setUsername(dbConfig.username)
+        driverManagerDataSource.setPassword(password)
+        driverManagerDataSource.setUrl(jdbcUrl)
+
+        LinkedHashMap result = executeSql(driverManagerDataSource,sqlStr)
+
+        return result
+
+    }
 
     /**
      * 執行SQL

@@ -30,59 +30,100 @@
 <main>
     <form id="${sqlScriptFrom}">
 
-        <div class="accordion" id="accordion">
-            <div class="card">
-                <div class="card-header" id="headingOne">
-                    <h2 class="mb-0">
-                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#accordion-setting" aria-expanded="true" aria-controls="accordion-setting">
-                            資料庫連線設定
-                        </button>
-                    </h2>
+%{--        <div class="accordion" id="accordion">--}%
+%{--            <div class="card">--}%
+%{--                <div class="card-header" id="headingOne">--}%
+%{--                    <h2 class="mb-0">--}%
+%{--                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#accordion-setting" aria-expanded="true" aria-controls="accordion-setting">--}%
+%{--                            資料庫連線設定--}%
+%{--                        </button>--}%
+%{--                    </h2>--}%
+%{--                </div>--}%
+%{--            </div>--}%
+%{--            <div id="accordion-setting" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">--}%
+%{--                <div class="card-body">--}%
+%{--                    <div class="container-fluid">--}%
+%{--                        <div class="row">--}%
+%{--                            <div class="col-3">--}%
+%{--                                <div class="form-group col-form-label">--}%
+%{--                                    <label for="db-type">db-type</label>--}%
+%{--                                    <g:select name="db-type" class="form-control" from="${tw.com.pollochang.dbpollo.database.DBType}" value="POSTGRESQL" />--}%
+%{--                                </div>--}%
+%{--                            </div>--}%
+%{--                            <div class="col-3">--}%
+%{--                                <div class="form-group col-form-label">--}%
+%{--                                    <label for="db-name">db-name</label>--}%
+%{--                                    <g:textField name="db-name" class="form-control" value="dictdb" />--}%
+%{--                                </div>--}%
+%{--                            </div>--}%
+%{--                        </div>--}%
+%{--                        <div class="row">--}%
+%{--                            <div class="col-3">--}%
+%{--                                <div class="form-group col-form-label">--}%
+%{--                                    <label for="db-host">db-host</label>--}%
+%{--                                    <g:textField name="db-host" class="form-control" value="127.0.0.1" />--}%
+%{--                                </div>--}%
+%{--                            </div>--}%
+%{--                            <div class="col-3">--}%
+%{--                                <div class="form-group col-form-label">--}%
+%{--                                    <label for="db-port">db-port</label>--}%
+%{--                                    <g:textField name="db-port" class="form-control"  value="5432" />--}%
+%{--                                </div>--}%
+%{--                            </div>--}%
+%{--                            <div class="col-3">--}%
+%{--                                <div class="form-group col-form-label">--}%
+%{--                                    <label for="db-username">db-username</label>--}%
+%{--                                    <g:passwordField name="db-username" class="form-control" value="dict_sa" />--}%
+%{--                                </div>--}%
+%{--                            </div>--}%
+%{--                            <div class="col-3">--}%
+%{--                                <div class="form-group col-form-label">--}%
+%{--                                    <label for="db-password">db-password</label>--}%
+%{--                                    <g:passwordField name="db-password" class="form-control"  value="fd831554" />--}%
+%{--                                </div>--}%
+%{--                            </div>--}%
+%{--                        </div>--}%
+%{--                    </div>--}%
+%{--                </div>--}%
+%{--            </div>--}%
+%{--        </div>--}%
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group col-form-label">
+                        <label for="dbConfigId">資料庫</label>
+                        <g:select name="dbConfigId" class="form-control"
+                                  from="${tw.com.pollochang.dbpollo.database.DbConfig.list()}"
+                                  noSelection="['':'請選擇']"
+                                  optionKey="id" optionValue="name"
+                        />
+                    </div>
+                    <script>
+
+                        function getSchemaTables(){
+                            jQuery.ajax({
+                                url: "${createLink(controller: 'console', action: "listDatabaseSchemas")}",
+                                data: {dbConfigId:jQuery('#dbConfigId').val()},
+                                dataType: "json",
+                                success: function (json) {
+                                    console.log(json);
+                                },
+                            });
+                        }
+
+                        // window.onload = function() {
+                        //
+                        //
+                        // }
+                        jQuery( "#dbConfigId" ).on( "change", function() {
+                            getSchemaTables();
+                        } );
+                    </script>
                 </div>
-            </div>
-            <div id="accordion-setting" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-                <div class="card-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="form-group col-form-label">
-                                    <label for="db-type">db-type</label>
-                                    <g:select name="db-type" class="form-control" from="${tw.com.pollochang.dbpollo.database.DBType}" value="POSTGRESQL" />
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="form-group col-form-label">
-                                    <label for="db-name">db-name</label>
-                                    <g:textField name="db-name" class="form-control" value="dictdb" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="form-group col-form-label">
-                                    <label for="db-host">db-host</label>
-                                    <g:textField name="db-host" class="form-control" value="127.0.0.1" />
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="form-group col-form-label">
-                                    <label for="db-port">db-port</label>
-                                    <g:textField name="db-port" class="form-control"  value="5432" />
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="form-group col-form-label">
-                                    <label for="db-username">db-username</label>
-                                    <g:passwordField name="db-username" class="form-control" value="dict_sa" />
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="form-group col-form-label">
-                                    <label for="db-password">db-password</label>
-                                    <g:passwordField name="db-password" class="form-control"  value="fd831554" />
-                                </div>
-                            </div>
-                        </div>
+                <div class="col-12">
+                    <div class="form-group col-form-label">
+                        <label for="schema">schema</label>
+                        <select id="schema"><option></option></select>
                     </div>
                 </div>
             </div>
