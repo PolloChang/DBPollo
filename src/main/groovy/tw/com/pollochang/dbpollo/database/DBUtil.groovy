@@ -176,7 +176,7 @@ class DBUtil {
         String result
 
         switch (dbType){
-            case DBType.POSTGRESQL : result = "select column_name column_name from information_schema.columns where table_name = ? order by ordinal_position"
+            case DBType.POSTGRESQL : result = "select column_name column_name from information_schema.columns where table_schema = ? and table_name = ? order by ordinal_position"
                 break
             case [DBType.ORACLE , DBType.ORACLE_SID] : result = ""
                 break

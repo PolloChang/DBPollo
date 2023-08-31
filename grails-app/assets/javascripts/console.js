@@ -146,3 +146,14 @@ const jsonToHTML = (filterId,json) => {
     document.getElementById(filterId).innerHTML = table;
 }
 
+const jsonToSelect = (selectId,json) =>{
+    let select = "";
+    if(json){
+        if (json.length !== 0) {
+            select = json.map((el, index) =>
+                `<option value="${el.schema_name}">${index+1}.${el.schema_name}</option>`
+            ).join('');
+            document.getElementById(`${selectId}`).innerHTML = select;
+        }
+    }
+}

@@ -2,7 +2,6 @@ package tw.com.pollochang.dbpollo.database
 
 import com.pollochang.util.AES
 import grails.gorm.transactions.Transactional
-import grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 
 @Transactional
@@ -10,43 +9,14 @@ class DbExecutionService {
 
     DriverManagerDataSource driverManagerDataSource
 
-    LinkedHashMap execute(GrailsParameterMap params) {
+    LinkedHashMap execute(
+            DbConfig dbConfig,
+            String sqlStr
+    ) {
 
-        LinkedHashMap result = [:]
-
-        DBUtil dbUtil = new DBUtil()
         Execution execution = new Execution()
 
-        String driverClassName
-        String jdbcUrl
-
-        DBType dbType = DBType.valueOf(params?."db-type" as String)
-        String dbHost = params?."db-host"
-        String dbPort = params?."db-port"
-        String dbName = params?."db-name"
-        String username = params?."db-username"
-        String password = params?."db-password"
-        String sqlText = params?."sql-text"
-
-        driverClassName = dbUtil.getDriverClassName(dbType)
-        jdbcUrl = dbUtil.getJdbcUrl(dbType,dbHost,dbPort as int,dbName)
-
-        log.debug("dbType = "+dbType)
-        log.debug("dbHost = "+dbHost)
-        log.debug("dbPort = "+dbPort)
-        log.debug("username = "+username)
-        log.debug("password = "+password)
-        log.debug("sqlText = "+sqlText)
-        log.debug("driverClassName = "+driverClassName)
-        log.debug("jdbcUrl = "+jdbcUrl)
-
-        driverManagerDataSource = new DriverManagerDataSource()
-        driverManagerDataSource.setDriverClassName(driverClassName)
-        driverManagerDataSource.setUsername(username)
-        driverManagerDataSource.setPassword(password)
-        driverManagerDataSource.setUrl(jdbcUrl)
-
-        result = execution.executeSql(driverManagerDataSource,sqlText)
+        LinkedHashMap result = execution.executeSql(new DriverManagerDataSource(),dbConfig,sqlStr)
 
         return result
     }

@@ -89,7 +89,7 @@
 %{--        </div>--}%
         <div class="container-fluid">
             <div class="row">
-                <div class="col-12">
+                <div class="col-6">
                     <div class="form-group col-form-label">
                         <label for="dbConfigId">資料庫</label>
                         <g:select name="dbConfigId" class="form-control"
@@ -98,32 +98,11 @@
                                   optionKey="id" optionValue="name"
                         />
                     </div>
-                    <script>
-
-                        function getSchemaTables(){
-                            jQuery.ajax({
-                                url: "${createLink(controller: 'console', action: "listDatabaseSchemas")}",
-                                data: {dbConfigId:jQuery('#dbConfigId').val()},
-                                dataType: "json",
-                                success: function (json) {
-                                    console.log(json);
-                                },
-                            });
-                        }
-
-                        // window.onload = function() {
-                        //
-                        //
-                        // }
-                        jQuery( "#dbConfigId" ).on( "change", function() {
-                            getSchemaTables();
-                        } );
-                    </script>
                 </div>
-                <div class="col-12">
-                    <div class="form-group col-form-label">
+                <div class="col-6">
+                    <div id="schemaDiv" class="form-group col-form-label">
                         <label for="schema">schema</label>
-                        <select id="schema"><option></option></select>
+                        <select id="schema" name="schema" class="form-control"><option></option></select>
                     </div>
                 </div>
             </div>
@@ -253,7 +232,44 @@
         });
     }
 
+    /**
+     * 列出資料庫的schema
+     */
+    function listDatabaseSchemas(value){
+        jQuery.ajax({
+            url: "${createLink(controller: 'console', action: "listDatabaseSchemas")}",
+            data: {dbConfigId:value},
+            dataType: "json",
+            success: function (json) {
+                if(json.success){
+                    jsonToSelect("schema",json.data);
+                }
 
+            },
+        });
+    }
+
+    function getTables(value){
+        let dbConfigId = jQuery("#dbConfigId").val();
+        jQuery.ajax({
+            url: "${createLink(controller: 'console', action: "getTables")}",
+            data: {dbConfigId:dbConfigId,schema:value},
+            dataType: "json",
+            success: function (json) {
+                console.log(json);
+                if(json.success){
+                    // jsonToSelect("schema",json.data);
+                    console.log(json.data);
+                }
+
+            },
+        });
+    }
+
+
+
+    jQuery( "#dbConfigId" ).on( "change", function() {listDatabaseSchemas(this.value);} );
+    jQuery( "#schema" ).on( "change", function() {getTables(this.value);} );
 </script>
 </body>
 </html>

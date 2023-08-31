@@ -17,9 +17,11 @@ class ConsoleController {
      */
     JSON executeSql(){
 
-        LinkedHashMap result = [:]
+        long dbConfigId = params?. dbConfigId as long
+        DbConfig dbConfig = DbConfig.read(dbConfigId)
+        String sqlStr = params?."sql-text"
 
-        result = dbExecutionService.execute(params)
+        LinkedHashMap result = dbExecutionService.execute(dbConfig,sqlStr)
 
         render result as JSON
     }
@@ -29,7 +31,12 @@ class ConsoleController {
      * @return
      */
     JSON getParserSQLAndGetTableColumns(){
-        HintOptions hintOptions = parserSQLService.getParserSQLAndGetTableColumns(params)
+
+        long dbConfigId = params?. dbConfigId as long
+        String schema = params?.schema
+        DbConfig dbConfig = DbConfig.read(dbConfigId)
+        String sqlStr = params?."sql-text"
+        HintOptions hintOptions = parserSQLService.getParserSQLAndGetTableColumns(dbConfig,schema,sqlStr)
         JSON renderJSON = hintOptions as JSON
         log.debug(renderJSON.toString())
         render hintOptions as JSON
@@ -40,9 +47,12 @@ class ConsoleController {
      * @return
      */
     JSON getTables(){
-        LinkedHashMap result = [:]
-
-        render result as JSON
+        long dbConfigId = params?. dbConfigId as long
+        String schema = params?.schema
+        DbConfig dbConfig = DbConfig.read(dbConfigId)
+        HintOptions hintOptions = parserSQLService.getSchemaTables(dbConfig,schema)
+        log.debug((hintOptions as JSON).toString())
+        render hintOptions as JSON
     }
 
     /**

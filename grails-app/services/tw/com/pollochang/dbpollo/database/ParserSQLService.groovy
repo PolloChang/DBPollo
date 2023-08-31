@@ -1,22 +1,13 @@
 package tw.com.pollochang.dbpollo.database
 
-import com.pollochang.util.AES
 import grails.gorm.transactions.Transactional
-import grails.web.servlet.mvc.GrailsParameterMap
 import net.sf.jsqlparser.parser.CCJSqlParserUtil
-import net.sf.jsqlparser.schema.Table
 import net.sf.jsqlparser.statement.Statement
-import net.sf.jsqlparser.statement.select.PlainSelect
 import net.sf.jsqlparser.statement.select.Select
-import net.sf.jsqlparser.statement.select.SelectItem
 import net.sf.jsqlparser.util.TablesNamesFinder
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 import tw.com.pollochang.dbpollo.codeMirror.HintOptions
 
-import java.sql.Connection
-import java.sql.PreparedStatement
-import java.sql.ResultSet
-import java.sql.SQLException
 
 /**
  * 解析SQL語法
@@ -24,51 +15,40 @@ import java.sql.SQLException
 @Transactional
 class ParserSQLService {
 
-    DriverManagerDataSource driverManagerDataSource
-
-    HintOptions getParserSQLAndGetTableColumns(GrailsParameterMap params) {
+    HintOptions getParserSQLAndGetTableColumns(
+            DbConfig dbConfig,
+            String schema,
+            String sqlStr
+    ) {
 
         HintOptions hintOptions = new HintOptions()
         DBUtil dbUtil = new DBUtil()
         Execution execution = new Execution()
 
-        DBType dbType = DBType.valueOf(params?."db-type" as String)
-        String dbHost = params?."db-host"
-        String dbPort = params?."db-port"
-        String dbName = params?."db-name"
-        String username = params?."db-username"
-        String password = params?."db-password"
-        String sqlText = params?."sql-text"
 
-        String querySchemaSql = dbUtil.getColumnSchema(dbType)
-        String driverClassName = dbUtil.getDriverClassName(dbType)
-        String jdbcUrl = dbUtil.getJdbcUrl(dbType,dbHost,dbPort as int,dbName)
-        Statement statement = CCJSqlParserUtil.parse(sqlText)
+        String queryColumnSchemaSql = dbUtil.getColumnSchema(dbConfig.type)
+        Statement statement = CCJSqlParserUtil.parse(sqlStr)
 
         Select selectStatement = (Select) statement
         TablesNamesFinder tablesNamesFinder = new TablesNamesFinder()
         List<String> tableList = tablesNamesFinder.getTableList(selectStatement)
-        log.debug("tableList = "+tableList)
 
-        log.debug("querySchemaSql = "+querySchemaSql)
-        driverManagerDataSource = new DriverManagerDataSource()
-        driverManagerDataSource.setDriverClassName(driverClassName)
-        driverManagerDataSource.setUsername(username)
-        driverManagerDataSource.setPassword(password)
-        driverManagerDataSource.setUrl(jdbcUrl)
-        tableList.each {tableName ->
-            LinkedHashMap tableSchema = execution.executeSql(driverManagerDataSource,querySchemaSql,[tableName])
+        hintOptions = getSchemaTables(dbConfig,schema)
 
-            List resultColumnList = tableSchema.data as List
-
+        hintOptions.tables.each { key,value ->
+            String tableName = key
             List columnList = []
+            if(tableList.indexOf(tableName) >= 0){
 
-            resultColumnList.each { column ->
-                columnList << column.column_name
+                LinkedHashMap tableSchema = execution.executeSql(new DriverManagerDataSource(),dbConfig,queryColumnSchemaSql,[schema,tableName])
+                List resultColumnList = tableSchema.data as List
+                resultColumnList.each { column ->
+                    columnList << column.column_name
+                }
+                log.debug("columnList = "+columnList)
             }
+            hintOptions.tables.put(key,columnList)
 
-            HashMap<String,List> table = ["${tableName}":columnList]
-            hintOptions.tables << table
         }
 
         return hintOptions
@@ -84,10 +64,30 @@ class ParserSQLService {
         Execution execution = new Execution()
         String listDatabaseSchemasSql = dbUtil.listDatabaseSchemas(dbConfig.type)
 
-        driverManagerDataSource = new DriverManagerDataSource()
-
-        LinkedHashMap result = execution.executeSql(driverManagerDataSource,dbConfig,listDatabaseSchemasSql)
+        LinkedHashMap result = execution.executeSql(new DriverManagerDataSource(),dbConfig,listDatabaseSchemasSql)
 
         return result
+    }
+
+    HintOptions getSchemaTables(
+            DbConfig dbConfig,
+            String schema
+    ){
+        DBUtil dbUtil = new DBUtil()
+        Execution execution = new Execution()
+        String getSchemaAllTablesSql = dbUtil.getSchemaAllTables(dbConfig.type)
+
+        HintOptions hintOptions = new HintOptions()
+
+        LinkedHashMap result = execution.executeSql(new DriverManagerDataSource(),dbConfig,getSchemaAllTablesSql,[schema])
+
+        List resultTableList = result.data as List
+
+        resultTableList.each { resultTable ->
+            HashMap<String,List> table = ["${resultTable.table_name}":[]]
+            hintOptions.tables << table
+        }
+
+        return hintOptions
     }
 }
