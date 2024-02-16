@@ -112,7 +112,16 @@
                 <div class="col-12">
                     <div class="form-group col-form-label">
                         <label for="sql-text">sql</label>
-                        <g:textArea name="sql-text" class="form-control" id="sql-text" rows="10" value="select * from bs_user bu " />
+                        <g:textArea name="sql-text" class="form-control" id="sql-text" rows="10" value="CREATE TABLE TEST1 (COL1 int);
+
+SELECT * FROM TEST0;
+SELECT * FROM TEST1;SELECT *
+FROM TEST2;
+
+INSERT INTO BIOBANK.TEST1(COL1) VALUES(1);
+SELECT * FROM TEST1;
+
+DROP TABLE TEST1;" />
                     </div>
                 </div>
             </div>
@@ -122,7 +131,7 @@
                             type="button" class="btn btn-primary"
                             onclick="executeSql()"
                     >
-                        ${message(code: "default.button.execute.label")}
+                        ${message(code: "default.button.execute.label")}(Ctrl + Enter)
                     </button>
                     <button
                             type="button" class="btn btn-primary"
@@ -208,7 +217,60 @@
         obj.filterId = "${filterId}";
         obj.data = jQuery(document.getElementById("${sqlScriptFrom}")).serialize();
         obj.action = "filter";
-        executeAjax(obj);
+        //let sqlStr = editor.getValue(); //取得全部內容
+        let i = 0;
+        let line = parseInt(editor.doc.getCursor().line);   //Cursor line
+        let getSqlStr = ""; //取得SQL字串
+
+        console.debug(editor.getLine(line).length);
+        console.debug(getLineValue(editor,line));
+
+        // 往前找段落
+        i = line ;
+        while (i >= 0){
+            let tmpSQL = "";
+            tmpSQL = getLineValue(editor,i);
+            console.debug("目前分析到第"+i+"行");
+            console.debug(tmpSQL);
+            // 檢查空白
+            if(tmpSQL===""){
+                console.debug("此行內容是空白");
+                break;
+            }
+
+            let semicolonCh = tmpSQL.indexOf(";");
+
+            // 檢查有分號，但是游標當前的行不算
+            if(semicolonCh > -1 && i !== line){
+
+                console.debug("有分號");
+                console.debug("切字串起始字元"+semicolonCh+1);
+                console.debug("切字串結束字元"+editor.getLine(i).length);
+
+                console.debug(tmpSQL.substring(semicolonCh+1,editor.getLine(i).length));
+                tmpSQL = tmpSQL.substring(semicolonCh+1,editor.getLine(i).length);
+            }
+
+
+            getSqlStr = tmpSQL+getSqlStr;
+            i--;
+        }
+
+        console.log("=====================getSqlStr START=====================");
+        console.log(getSqlStr)
+        console.log("=====================getSqlStr END  =====================");
+
+        // 後找段落
+
+        // console.log(sqlStr)
+        // executeAjax(obj);
+    }
+
+    function getLineValue(editor,line){
+        let returnVal = "";
+
+        returnVal = editor.getLine(line).substr(0,editor.getLine(line).length);
+        return returnVal;
     }
 
     function changeHintOptions(){
@@ -256,12 +318,7 @@
             data: {dbConfigId:dbConfigId,schema:value},
             dataType: "json",
             success: function (json) {
-                console.log(json);
-                if(json.success){
-                    // jsonToSelect("schema",json.data);
-                    console.log(json.data);
-                }
-
+                editor.setOption("hintOptions", json);
             },
         });
     }
