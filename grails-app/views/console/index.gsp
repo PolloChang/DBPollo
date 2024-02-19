@@ -118,6 +118,9 @@ SELECT * FROM TEST0;
 SELECT * FROM TEST1;SELECT *
 FROM TEST2;
 
+SELECT *
+FROM TEST3;
+
 INSERT INTO BIOBANK.TEST1(COL1) VALUES(1);
 SELECT * FROM TEST1;
 
@@ -225,6 +228,8 @@ DROP TABLE TEST1;" />
         console.debug(editor.getLine(line).length);
         console.debug(getLineValue(editor,line));
 
+        // 判斷要往後找還是往前找
+
         // 往前找段落
         i = line ;
         while (i >= 0){
@@ -256,11 +261,46 @@ DROP TABLE TEST1;" />
             i--;
         }
 
+        console.log("----------------前段拼完的SQL-Start----------------");
+        console.log(getSqlStr);
+        console.log("----------------前段拼完的SQL-End------------------");
+
+        // 後找段落
+        i = line ;
+        while (i <= editor.lastLine()){
+            let tmpSQL = "";
+            tmpSQL = getLineValue(editor,i);
+            console.log("目前分析到第"+i+"行");
+            console.log(tmpSQL);
+            // 檢查空白
+            if(tmpSQL===""){
+                console.debug("此行內容是空白");
+                break;
+            }
+
+            let semicolonCh = tmpSQL.indexOf(";");
+
+            // 檢查有分號，但是游標當前的行不算
+            if(semicolonCh > -1 && i !== line){
+
+                console.debug("有分號");
+                console.debug("切字串起始字元"+semicolonCh+1);
+                console.debug("切字串結束字元"+editor.getLine(i).length);
+
+                console.debug(tmpSQL.substring(semicolonCh+1,editor.getLine(i).length));
+                tmpSQL = tmpSQL.substring(semicolonCh+1,editor.getLine(i).length);
+            }
+
+
+            getSqlStr = tmpSQL+getSqlStr;
+            i++;
+        }
+
         console.log("=====================getSqlStr START=====================");
         console.log(getSqlStr)
         console.log("=====================getSqlStr END  =====================");
 
-        // 後找段落
+
 
         // console.log(sqlStr)
         // executeAjax(obj);
